@@ -1,0 +1,99 @@
+Funciones.c
+#include <stdio.h>
+#include <string.h>
+#include "solucion1.h"
+
+void addProduct(char productNames[][MAX_NAME_LEN], int quantities[], int times[], int resources[], int* productCount) {
+    if (*productCount >= MAX_PRODUCTS) {
+        printf("No se pueden agregar más productos.\n");
+        return;
+    }
+
+    printf("Ingrese el nombre del producto: ");
+    scanf(" %[^\n]", productNames[*productCount]);
+    printf("Ingrese la cantidad demandada: ");
+    scanf("%d", &quantities[*productCount]);
+    printf("Ingrese el tiempo de fabricación por unidad: ");
+    scanf("%d", &times[*productCount]);
+    printf("Ingrese los recursos necesarios por unidad: ");
+    scanf("%d", &resources[*productCount]);
+
+    (*productCount)++;
+    printf("Producto agregado exitosamente.\n");
+}
+
+void editProduct(char productNames[][MAX_NAME_LEN], int quantities[], int times[], int resources[], int productCount) {
+    char name[MAX_NAME_LEN];
+    printf("Ingrese el nombre del producto a editar: ");
+    scanf(" %[^\n]", name);
+
+    for (int i = 0; i < productCount; i++) {
+        if (strcmp(productNames[i], name) == 0) {
+            printf("Ingrese la nueva cantidad demandada: ");
+            scanf("%d", &quantities[i]);
+            printf("Ingrese el nuevo tiempo de fabricación por unidad: ");
+            scanf("%d", &times[i]);
+            printf("Ingrese los nuevos recursos necesarios por unidad: ");
+            scanf("%d", &resources[i]);
+            printf("Producto editado exitosamente.\n");
+            return;
+        }
+    }
+
+    printf("Producto no encontrado.\n");
+}
+
+void deleteProduct(char productNames[][MAX_NAME_LEN], int quantities[], int times[], int resources[], int* productCount) {
+    char name[MAX_NAME_LEN];
+    printf("Ingrese el nombre del producto a eliminar: ");
+    scanf(" %[^\n]", name);
+
+    for (int i = 0; i < *productCount; i++) {
+        if (strcmp(productNames[i], name) == 0) {
+            for (int j = i; j < *productCount - 1; j++) {
+                strcpy(productNames[j], productNames[j + 1]);
+                quantities[j] = quantities[j + 1];
+                times[j] = times[j + 1];
+                resources[j] = resources[j + 1];
+            }
+            (*productCount)--;
+            printf("Producto eliminado exitosamente.\n");
+            return;
+        }
+    }
+
+    printf("Producto no encontrado.\n");
+}
+
+void calculateTotals(char productNames[][MAX_NAME_LEN], int quantities[], int times[], int resources[], int productCount, int timeLimit, int resourceLimit) {
+    int totalTime = 0, totalResources = 0;
+
+    for (int i = 0; i < productCount; i++) {
+        totalTime += times[i] * quantities[i];
+        totalResources += resources[i] * quantities[i];
+    }
+
+    printf("\nTiempo total requerido: %d\n", totalTime);
+    printf("Recursos totales requeridos: %d\n", totalResources);
+
+    if (totalTime <= timeLimit && totalResources <= resourceLimit) {
+        printf("La fábrica puede cumplir con la demanda.\n");
+    } else {
+        printf("La fábrica no puede cumplir con la demanda.\n");
+    }
+}
+
+void displayProducts(char productNames[][MAX_NAME_LEN], int quantities[], int times[], int resources[], int productCount) {
+    if (productCount == 0) {
+        printf("No hay productos registrados.\n");
+        return;
+    }
+
+    for (int i = 0; i < productCount; i++) {
+        printf("Producto %d:\n", i + 1);
+        printf("  Nombre: %s\n", productNames[i]);
+        printf("  Cantidad: %d\n", quantities[i]);
+        printf("  Tiempo por unidad: %d\n", times[i]);
+        printf("  Recursos por unidad: %d\n", resources[i]);
+    }
+}
